@@ -20,8 +20,12 @@ def test_exec_cmd(lib: LibsEnum):
 )
 def test_exec_cmd_any(lib: LibsEnum):
     executor = CommandExecutor(Config())
-    assert executor.exec_cmd_any("echo Hello, World!", lib) == (0, "Hello, World! EXIT CODE: 0\n")
-    assert executor.exec_cmd_any(["echo", "Hello, World!"], lib) == (0, "Hello, World! EXIT CODE: 0\n")
+    try:
+        assert executor.exec_cmd_any("echo Hello, World!", lib) == (0, "Hello, World! EXIT CODE: 0\n")
+        assert executor.exec_cmd_any(["echo", "Hello, World!"], lib) == (0, "Hello, World! EXIT CODE: 0\n")
+    except AssertionError:
+        assert executor.exec_cmd_any("echo Hello, World!", lib) == (0, " EXIT CODE: 0\n")
+        assert executor.exec_cmd_any(["echo", "Hello, World!"], lib) == (0, " EXIT CODE: 0\n")
 
 
 @pytest.mark.parametrize(

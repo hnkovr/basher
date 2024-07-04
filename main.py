@@ -106,6 +106,7 @@ def log_execution(func: Callable) -> Callable:
 
         LOG.log(Config.LOGGING_LEVEL, f"{prefix_with_tabs(Config.COMMAND_TRACING_PREFIX)}{command_str}")
         exit_code, output = func(command_str, *args, **kwargs)
+        output = output or ""
         output_with_exit_code = f"{output.strip()} {Config.COMMAND_EXIT_CODE_PREFIX}{exit_code}\n"
 
         LOG.log(

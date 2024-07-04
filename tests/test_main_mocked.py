@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from main import CommandExecutor, Config, LibsEnum, bash, exec_cmd  # pylint: disable=E0401:
+from basher.main import CommandExecutor, Config, LibsEnum, bash, exec_cmd  # pylint: disable=E0401:
 
 
 def mock_command_execution():
