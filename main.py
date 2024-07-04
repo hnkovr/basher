@@ -1,6 +1,5 @@
 # main.py
-"""
-MIT License
+"""MIT License
 ===========
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +25,7 @@ import subprocess
 import sys
 import textwrap
 from enum import Enum
-from typing import Callable, Tuple, Union, List
+from typing import Callable, List, Tuple, Union
 
 # Import exception handling
 try:
@@ -43,23 +42,23 @@ except ImportError:
 
 
 class LibsEnum(Enum):
-    SUBPROCESS = 'subprocess'
-    OS_SYSTEM = 'os_system'
-    PLUMBUM = 'plumbum'
-    SH = 'sh'
-    FABRIC = 'fabric'
+    SUBPROCESS = "subprocess"
+    OS_SYSTEM = "os_system"
+    PLUMBUM = "plumbum"
+    SH = "sh"
+    FABRIC = "fabric"
 
 
 class Config:
+    """Configuration class to hold defaults, constants, and globals.
     """
-    Configuration class to hold defaults, constants, and globals.
-    """
-    LOGGING_LIBRARY = 'loguru'  # Default logging library
+
+    LOGGING_LIBRARY = "loguru"  # Default logging library
     COMMAND_LIBRARY = LibsEnum.SUBPROCESS  # Default command execution library
-    COMMAND_TRACING_PREFIX = '> '
-    COMMAND_RESULT_PREFIX = ': '
-    COMMAND_ERROR_PREFIX = 'ERROR: '
-    COMMAND_EXIT_CODE_PREFIX = 'EXIT CODE: '
+    COMMAND_TRACING_PREFIX = "> "
+    COMMAND_RESULT_PREFIX = ": "
+    COMMAND_ERROR_PREFIX = "ERROR: "
+    COMMAND_EXIT_CODE_PREFIX = "EXIT CODE: "
     LOGGING_LEVEL = "TRACE"
     RESULT_LOGGING_LEVEL = "DEBUG"
     ERROR_LOGGING_LEVEL = "ERROR"
@@ -72,14 +71,13 @@ logger = None
 
 
 def set_logging_library(library: str):
-    """
-    Function to switch logging library by monkey-patching.
+    """Function to switch logging library by monkey-patching.
 
     :param library: str: The name of the logging library to use ('loguru' or 'logging').
     """
     global logger
-    if library == 'loguru':
-        logger = globals()['logger'] = loguru_logger
+    if library == "loguru":
+        logger = globals()["logger"] = loguru_logger
         logger.remove()
         logger.add(
             sys.stderr,
@@ -89,10 +87,11 @@ def set_logging_library(library: str):
     else:
         logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.DEBUG)
-        logger = globals()['logger'] = logger
+        logger = globals()["logger"] = logger
+
 
 # for pytests fixing?
-logger = globals()['logger'] = loguru_logger
+logger = globals()["logger"] = loguru_logger
 logger.remove()
 logger.add(
     sys.stderr,
@@ -102,18 +101,16 @@ logger.add(
 
 
 def process_command(command: Union[str, list]) -> str:
-    """
-    Process a command, which could be a multiline string or a list of command arguments.
+    """Process a command, which could be a multiline string or a list of command arguments.
 
     :param command: Union[str, list]: The command to process.
     :return: str: A single string command.
     """
-    return textwrap.dedent(' '.join(command) if isinstance(command, list) else command)
+    return textwrap.dedent(" ".join(command) if isinstance(command, list) else command)
 
 
 def log_execution(func: Callable) -> Callable:
-    """
-    Decorator to log command execution details.
+    """Decorator to log command execution details.
     """
 
     def wrapper(command: Union[str, List[str]], *args, **kwargs) -> Tuple[int, str]:
@@ -139,8 +136,7 @@ def log_execution(func: Callable) -> Callable:
 @log_execution
 def exec_cmd(command: Union[str, list], trace: Union[bool, Callable, str] = True, skip_err: bool = False,
              by: LibsEnum = Config.COMMAND_LIBRARY) -> Tuple[int, str]:
-    """
-    Execute a bash command with logging and error handling.
+    r"""Execute a bash command with logging and error handling.
 
     :param command: str | list: The command to execute.
     :param trace: bool | logger_func | logger_level: Trace level for logging.
@@ -162,7 +158,7 @@ def exec_cmd(command: Union[str, list], trace: Union[bool, Callable, str] = True
 
     if by == LibsEnum.SUBPROCESS:
         # Use subprocess to execute the command
-        result = subprocess.run(command, shell=True, text=True, capture_output=True)
+        result = subprocess.run(command, shell=True, text=True, capture_output=True, check=False)
     elif by == LibsEnum.OS_SYSTEM:
         # Use os.system to execute the command
         exit_code = os.system(command)
@@ -177,7 +173,7 @@ def exec_cmd(command: Union[str, list], trace: Union[bool, Callable, str] = True
         result = cmd(*command.split()[1:])
     elif by == LibsEnum.FABRIC:
         # Use fabric to execute the command on a remote host
-        conn = Connection('localhost')  # Update with actual host if needed
+        conn = Connection("localhost")  # Update with actual host if needed
         result = conn.run(command, hide=True)
 
     if result is None:
@@ -190,9 +186,7 @@ def exec_cmd(command: Union[str, list], trace: Union[bool, Callable, str] = True
 
 
 class CommandExecutor:
-    """
-    Class to execute bash commands and log the results.
-    """
+    """Class to execute bash commands and log the results."""
 
     def __init__(self, config: Config):
         self.config = config
@@ -200,8 +194,7 @@ class CommandExecutor:
 
     @log_execution
     def exec_cmd(self, command: Union[str, list]) -> Tuple[int, str]:
-        """
-        Execute a bash command and return the exit code and output.
+        r"""Execute a bash command and return the exit code and output.
 
         :param command: str | list: The command to execute.
         :return: Tuple[int, str]: A tuple containing the exit code and the command output.
@@ -209,7 +202,7 @@ class CommandExecutor:
 
         >>> executor = CommandExecutor(Config())
         >>> executor.exec_cmd('echo Hello, World!')
-        (0, 'Hello, World! EXIT CODE: 0\\n')
+        (0, 'Hello, World! EXIT CODE: 0\n')
 
         >>> executor.exec_cmd('cmd_not_found')  # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
@@ -220,8 +213,7 @@ class CommandExecutor:
 
     @log_execution
     def exec_cmd_plumbum(self, command: Union[str, list]) -> Tuple[int, str]:
-        """
-        Execute a command using plumbum.
+        """Execute a command using plumbum.
 
         :param command: str | list: The command to execute.
         :return: Tuple[int, str]: A tuple containing the exit code and the command output.
@@ -234,8 +226,7 @@ class CommandExecutor:
 
     @log_execution
     def exec_cmd_sh(self, command: Union[str, list]) -> Tuple[int, str]:
-        """
-        Execute a command using sh.
+        """Execute a command using sh.
 
         :param command: str | list: The command to execute.
         :return: Tuple[int, str]: A tuple containing the exit code and the command output.
@@ -248,8 +239,7 @@ class CommandExecutor:
 
     @log_execution
     def exec_cmd_fabric(self, host: str, command: Union[str, list]) -> Tuple[int, str]:
-        """
-        Execute a command using fabric on a remote host.
+        """Execute a command using fabric on a remote host.
 
         :param host: str: The remote host to execute the command on.
         :param command: str | list: The command to execute.
@@ -262,8 +252,7 @@ class CommandExecutor:
         return result.exited, result.stdout
 
     def exec_cmd_any(self, command: Union[str, list], by: LibsEnum) -> Tuple[int, str]:
-        """
-        Execute a command using the specified library.
+        r"""Execute a command using the specified library.
 
         :param command: str | list: The command to execute.
         :param by: LibsEnum: The library to use for command execution.
@@ -272,15 +261,14 @@ class CommandExecutor:
 
         >>> executor = CommandExecutor(Config())
         >>> executor.exec_cmd_any('echo Hello, World!', LibsEnum.SUBPROCESS)
-        (0, 'Hello, World! EXIT CODE: 0\\n')
+        (0, 'Hello, World! EXIT CODE: 0\n')
         """
         return exec_cmd(command, True, by=by)
 
 
 def bash(command: Union[str, list], trace: Union[bool, Callable, str] = True, skip_err: bool = False) -> Tuple[
     int, str]:
-    """
-    Wrapper function to choose the correct command executor based on Config.
+    r"""Wrapper function to choose the correct command executor based on Config.
 
     :param command: str | list: The command to execute.
     :param trace: bool | logger_func | logger_level: Trace level for logging.
@@ -288,7 +276,7 @@ def bash(command: Union[str, list], trace: Union[bool, Callable, str] = True, sk
     :return: Tuple[int, str]: A tuple containing the exit code and the command output.
 
     >>> bash('echo Hello, World!', True)
-    (0, 'Hello, World! EXIT CODE: 0\\n')
+    (0, 'Hello, World! EXIT CODE: 0\n')
     """
     executor = CommandExecutor(Config())
     return executor.exec_cmd_any(command, Config.COMMAND_LIBRARY)
@@ -311,6 +299,7 @@ def demo1():
     echo 456
     """)
 
+
 if __name__ == "__main__":
     # import doctest
     # doctest.testmod(raise_on_error=True)
@@ -318,6 +307,5 @@ if __name__ == "__main__":
     # # Run pytest
     # import pytest
     # pytest.main()
-
 
     demo1()

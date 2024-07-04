@@ -2,10 +2,12 @@ install:
 	pip install -r requirements.txt
 
 lint:
-	ruff .
+	#ruff check . --fix
+	ruff check .
 	black .
-	pylint aaa.py
+	pylint .
 	isort .
+#	ruff . --fix
 
 test:
 	pytest
@@ -19,4 +21,4 @@ format:
 	docformatter -r .
 
 type-check:
-	mypy aaa.py
+	mypy .

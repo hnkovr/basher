@@ -1,0 +1,141 @@
+# /Users/Shared/github/raf/dags/pyproject.toml
+[tool.mypy]
+allow_redefinition = true
+disallow_incomplete_defs = true
+files = "."
+ignore_missing_imports = true
+python_version = "3.9"
+strict_optional = true
+warn_return_any = false
+warn_unused_configs = true
+exclude = [".venv", "dlk_airflow_common"]
+
+
+[tool.black]
+exclude = '''
+(
+  /(
+    | \.git
+    | \.mypy_cache
+    | \.venv
+  )/
+)
+'''
+include = '\.pyi?$'
+skip-string-normalization = true
+line-length = 120
+
+
+[tool.isort]
+line_length = 120
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
+no_lines_before = ['STDLIB', 'LOCALFOLDER']
+known_third_party = ['pytest']
+known_first_party = ['tests']
+multi_line_output = 3
+lines_after_imports = 2
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+skip_glob = '.venv/'
+
+
+[tool.pylint.MAIN]
+disable = ["fixme", "logging-fstring-interpolation"]
+extension-pkg-allow-list = []
+good-names = [
+    'i',
+    'n',
+    'db',
+    'id',
+    'df',
+]
+jobs = 0
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+
+[tool.pytest.ini_options]
+addopts = "--junitxml=pytest.xml --cov . --cov-report term-missing --cov-report xml --cov-report html"
+minversion = "6.0"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+omit = [".venv/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    'pragma: not covered',
+    '@overload',
+    'if TYPE_CHECKING:',
+    'if __name__ == "__main__":',
+]
+
+#[tool.ruff]
+#exclude = ["*"]  # Чтобы расширение ruff для VSCode не запускалось в этой папке
+[tool.ruff]
+line-length = 120
+select = ["ALL"]
+ignore = [
+    # vk15:
+    "E501", # Line too long
+    "ERA001", # Found commented-out code
+    "D401",
+
+    ############
+    "E402", # because of sys.path.append("/datalake/airflow/projects/tr_an") in each file
+    # E402 Module level import not at top of file
+    "TD002", # TD002 Missing author in TODO
+    "TD003", # TD003 Missing issue link on the line following this TODO
+    "C408", # C408 Unnecessary `dict` call (rewrite as a literal)
+    "TD004", # TD004 Missing colon in TODO
+
+    #
+    "S101", # S101 Use of `assert` detected
+
+    "A001", # A001 Variable `print` is shadowing a Python builtin
+    "ANN002", # ANN002 Missing type annotation for `*msg`
+    "ANN001", # ANN001 Missing type annotation for function argument `sep`
+    "ARG001", # ARG001 Unused function argument: `etype`
+
+    "ARG001", # D100 Missing docstring in public module
+    "ARG001", # D103 Missing docstring in public function
+
+    "D400", # D400 First line should end with a period
+    "D415", # D415 First line should end with a period, question mark, or exclamation point
+    "UP007", # UP007 Use `X | Y` for type annotations
+
+
+    "D100", # D100 Missing docstring in public module
+    "D103", # D103 Missing docstring in public function
+
+    "UP006", # UP006 [*] Use `list` instead of `List` for type annotation
+    "ANN202", # ANN202 Missing return type annotation for private function `decorator`
+    "ANN201", # Missing return type annotation for public function
+
+    "FA100", # Missing `from __future__ import annotations`, but uses `typing.Union`
+    "TRY002", # Create your own exception
+
+    "D105",
+    "D107",
+    "D203",
+    "D205",
+    "D213",
+    "D406",
+    "D407",
+    "FBT",
+    "FIX002",
+    "FIX004",
+    "G004",
+    "PD002",
+    "PD011",
+    "PD901",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "TRY003",
+]
+target-version = "py37"
+exclude = [".venv", "dlk_airflow_common"]
