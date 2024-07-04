@@ -1,11 +1,6 @@
 loguru
-ruff
-mypy
-black
 click
-pylint
-isort
-docformatter
+
 coverage
 pytest
 
@@ -13,3 +8,10 @@ sh
 fabric
 plumbum
 requests
+
+ruff
+mypy
+black
+pylint
+isort
+docformatter

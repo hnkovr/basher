@@ -2,12 +2,13 @@ install:
 	pip install -r requirements.txt
 
 lint:
-	#ruff check . --fix
+	ruff check . --fix
 	ruff check .
 	black .
 	pylint .
 	isort .
-#	ruff . --fix
+	ruff check . --fix
+	ruff check .
 
 test:
 	pytest

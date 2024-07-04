@@ -2,11 +2,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from main import CommandExecutor, Config, LibsEnum, bash, exec_cmd
+from main import CommandExecutor, Config, LibsEnum, bash, exec_cmd  # pylint: disable=E0401:
 
 
 def mock_command_execution():
-    """Helper function to mock various command execution methods."""
+    """Help to mock various command execution methods."""
     mock_subprocess = patch("main.subprocess.run").start()
     mock_subprocess.return_value = MagicMock(returncode=0, stdout="Hello, World! EXIT CODE: 0\n")
 
@@ -26,9 +26,11 @@ def mock_command_execution():
     return [mock_subprocess, mock_os_system, mock_plumbum, mock_sh, mock_fabric]
 
 
-@pytest.mark.parametrize("lib",
-                         [LibsEnum.SUBPROCESS, LibsEnum.OS_SYSTEM, LibsEnum.PLUMBUM, LibsEnum.SH, LibsEnum.FABRIC])
-def test_exec_cmd_any(lib):
+@pytest.mark.parametrize(
+    "lib",
+    [LibsEnum.SUBPROCESS, LibsEnum.OS_SYSTEM, LibsEnum.PLUMBUM, LibsEnum.SH, LibsEnum.FABRIC],
+)
+def test_exec_cmd_any(lib: LibsEnum):
     """Test the execution of a command using various libraries."""
     executor = CommandExecutor(Config())
 
@@ -41,9 +43,11 @@ def test_exec_cmd_any(lib):
             mock.stop()
 
 
-@pytest.mark.parametrize("lib",
-                         [LibsEnum.SUBPROCESS, LibsEnum.OS_SYSTEM, LibsEnum.PLUMBUM, LibsEnum.SH, LibsEnum.FABRIC])
-def test_bash(lib):
+@pytest.mark.parametrize(
+    "lib",
+    [LibsEnum.SUBPROCESS, LibsEnum.OS_SYSTEM, LibsEnum.PLUMBUM, LibsEnum.SH, LibsEnum.FABRIC],
+)
+def test_bash(lib: LibsEnum):
     """Test the bash function with different command libraries."""
     Config.COMMAND_LIBRARY = lib
 
@@ -72,11 +76,10 @@ def test_multiline_command():
 
 def test_command_error():
     """Test handling of command execution errors."""
-    with patch("main.exec_cmd",
-               side_effect=RuntimeError("Command failed"),
-               ), patch("main.bash",
-                        side_effect=RuntimeError(
-                            "Command failed")):
+    with patch(
+        "main.exec_cmd",
+        side_effect=RuntimeError("Command failed"),
+    ), patch("main.bash", side_effect=RuntimeError("Command failed")):
         with pytest.raises(RuntimeError):
             exec_cmd("cmd_not_found")
 

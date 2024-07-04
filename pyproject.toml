@@ -55,10 +55,23 @@ jobs = 0
 [tool.pylint.FORMAT]
 max-line-length = 120
 
+# vk15
+[tool.pylint.MESSAGES_CONTROL]
+disable = [
+    "C0114", # Missing module docstring
+    "C0116", # Missing function or method docstring
+    "R0903", # Too few public methods
+    "C0103", # Constant name doesn't conform to naming style
+    "W0603", # Using the global statement
+    "W0613", # Unused argument
+    "C0412"   # Imports not grouped
+]
+
+
 
 [tool.pytest.ini_options]
-addopts = "--junitxml=pytest.xml --cov . --cov-report term-missing --cov-report xml --cov-report html"
-minversion = "6.0"
+#addopts = "--junitxml=pytest.xml --cov . --cov-report term-missing --cov-report xml --cov-report html"
+#minversion = "6.0"
 testpaths = ["tests"]
 
 [tool.coverage.run]
@@ -73,35 +86,52 @@ exclude_lines = [
     'if __name__ == "__main__":',
 ]
 
+
+
+####################
+# vk15:
+#[tool.ruff]
+#
+#
+####################
+
 #[tool.ruff]
 #exclude = ["*"]  # Чтобы расширение ruff для VSCode не запускалось в этой папке
 [tool.ruff]
 line-length = 120
 select = ["ALL"]
+#select = ["E", "F", "W", "C", "N", "Q"]
 ignore = [
+
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in `**kwargs`
+
     # vk15:
-    "E501", # Line too long
-    "ERA001", # Found commented-out code
-    "D401",
+    #    "E501", # Line too long
+    #    "ERA001", # Found commented-out code
+    #    "D401", #?   First line should be in imperative mood
+
+    #    "ANN204", # Add return type annotation: `None`"
+    "S605", # Starting a process with a shell, possible injection detected
+    "S602", # `subprocess` call with `shell=True` identified, security issue"
+    #    "ANN003", # Missing type annotation for `**kwargs`
+
 
     ############
-    "E402", # because of sys.path.append("/datalake/airflow/projects/tr_an") in each file
+    #    "E402", # because of sys.path.append("/datalake/airflow/projects/tr_an") in each file
     # E402 Module level import not at top of file
-    "TD002", # TD002 Missing author in TODO
-    "TD003", # TD003 Missing issue link on the line following this TODO
-    "C408", # C408 Unnecessary `dict` call (rewrite as a literal)
-    "TD004", # TD004 Missing colon in TODO
+    #    "C408", # C408 Unnecessary `dict` call (rewrite as a literal)
+
 
     #
     "S101", # S101 Use of `assert` detected
 
-    "A001", # A001 Variable `print` is shadowing a Python builtin
-    "ANN002", # ANN002 Missing type annotation for `*msg`
-    "ANN001", # ANN001 Missing type annotation for function argument `sep`
-    "ARG001", # ARG001 Unused function argument: `etype`
+    #    "A001", # A001 Variable `print` is shadowing a Python builtin
+    #    "ANN002", # ANN002 Missing type annotation for `*msg`
+    #    "ANN001", # ANN001 Missing type annotation for function argument `sep`
+    #    "ARG001", # ARG001 Unused function argument: `etype`
 
-    "ARG001", # D100 Missing docstring in public module
-    "ARG001", # D103 Missing docstring in public function
+    #    "ARG001", # D100 Missing docstring in public module
+    #    "ARG001", # D103 Missing docstring in public function
 
     "D400", # D400 First line should end with a period
     "D415", # D415 First line should end with a period, question mark, or exclamation point
@@ -138,4 +168,4 @@ ignore = [
     "TRY003",
 ]
 target-version = "py37"
-exclude = [".venv", "dlk_airflow_common"]
+exclude = [".venv", "dlk_airflow_common", ".bak", ".nuy"]
