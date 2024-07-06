@@ -15,6 +15,10 @@ try:
     from loguru import logger as loguru_logger
     from plumbum import local
 except ImportError:
+    logging.exception(
+        "The required libraries are not installed. Please run `pip install -r requirements.txt`.",
+    )
+    del logging
     subprocess.run("sh init.sh", shell=True, check=True)  # noqa: S607 Starting a process with a partial executable path
 
     import sh
