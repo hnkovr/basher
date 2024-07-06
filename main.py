@@ -1,26 +1,5 @@
 # main.py
-
-import logging
-import os
-import subprocess
-import sys
-import textwrap
-from enum import Enum
-from typing import Any, Callable, List, Tuple, Union
-
-# Import exception handling
-try:
-    import sh
-    from fabric import Connection
-    from loguru import logger as loguru_logger
-    from plumbum import local
-except ImportError:
-    subprocess.run("sh init.sh", shell=True, check=True)  # noqa: S607 Starting a process with a partial executable path
-
-    import sh
-    from fabric import Connection
-    from loguru import logger as loguru_logger
-    from plumbum import local
+from init import *
 
 
 class LibsEnum(Enum):

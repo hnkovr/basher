@@ -18,3 +18,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
+
+import logging
+import subprocess
+
+for _ in (0, 0):
+    try:
+        import sh  # noqa: F401
+        from fabric import Connection  # noqa: F401
+        from loguru import logger as loguru_logger  # noqa: F401
+        from plumbum import local  # noqa: F401
+
+        break
+    except ImportError:
+        logging.exception(
+            "The required libraries are not installed. Please run `pip install -r requirements.txt`.",
+        )
+        del logging
+        subprocess.run("sh init.sh", shell=True, check=True)  # Starting a process with a partial executable path
+
+__all__ = "sh, Connection, loguru_logger, local".split(", ")
