@@ -1,13 +1,6 @@
 loguru
-ruff
-mypy
-black
 click
 pylint
-isort
-docformatter
-coverage
-pytest
 
 sh
 fabric
