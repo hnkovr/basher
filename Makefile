@@ -1,11 +1,13 @@
 install:
-	pip install -r requirements.txt
+	sh init.sh
+#	pip install -r requirements.txt
 
 lint:
 	ruff .
 	black .
-	pylint aaa.py
+	pylint .
 	isort .
+	ruff .
 
 test:
 	pytest
@@ -20,3 +22,6 @@ format:
 
 type-check:
 	mypy aaa.py
+
+run:
+	python main.py
